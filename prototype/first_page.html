@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 儿童听故事</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #8BC34A;
+            --primary-blue: #64B5F6;
+            --bg-color: #F9FBE7;
+        }
+        body {
+            background-color: var(--bg-color);
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .status-bar {
+            height: 44px;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .nav-bar {
+            height: 65px;
+            background-color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 50;
+            box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+        }
+        .story-card {
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        .story-card:hover {
+            transform: translateY(-3px);
+        }
+        .timer-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.4);
+        }
+        .player-bar {
+            height: 70px;
+            background-color: white;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="pb-16">
+    <!-- 状态栏 -->
+    <div class="status-bar flex items-center justify-between px-5">
+        <div class="text-sm">20:30</div>
+        <div class="flex space-x-2">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+        </div>
+    </div>
+    
+    <!-- 内容区域 -->
+    <div class="container mx-auto px-4 pt-2 pb-20">
+        <!-- 头部欢迎 -->
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">你好，小朋友！</h1>
+                <p class="text-gray-600">今天想听什么故事呢？</p>
+            </div>
+            <div class="h-12 w-12 rounded-full bg-primary-blue flex items-center justify-center text-white">
+                <i class="fas fa-bell text-xl"></i>
+            </div>
+        </div>
+        
+        <!-- 热门儿童故事 -->
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 flex items-center">
+                <i class="fas fa-fire text-red-500 mr-2"></i>热门儿童故事
+            </h2>
+            <div class="overflow-x-auto">
+                <div class="flex space-x-4 py-2" style="width: max-content;">
+                    <div class="story-card bg-white p-3 w-40">
+                        <img src="https://images.unsplash.com/photo-1478940020726-e9e191651f1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZmFpcnklMjB0YWxlfGVufDB8fDB8fHww" alt="白雪公主" class="rounded-lg h-32 w-full object-cover mb-2">
+                        <h3 class="font-medium">白雪公主</h3>
+                        <p class="text-xs text-gray-500">经典童话 · 8分钟</p>
+                    </div>
+                    <div class="story-card bg-white p-3 w-40">
+                        <img src="https://images.unsplash.com/photo-1629196113796-2e8ee0eae086?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZmFpcnklMjB0YWxlfGVufDB8fDB8fHww" alt="三只小猪" class="rounded-lg h-32 w-full object-cover mb-2">
+                        <h3 class="font-medium">三只小猪</h3>
+                        <p class="text-xs text-gray-500">经典童话 · 6分钟</p>
+                    </div>
+                    <div class="story-card bg-white p-3 w-40">
+                        <img src="https://images.unsplash.com/photo-1527137342181-19aab11a8ee8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhaXJ5JTIwdGFsZXxlbnwwfHwwfHx8MA%3D%3D" alt="小红帽" class="rounded-lg h-32 w-full object-cover mb-2">
+                        <h3 class="font-medium">小红帽</h3>
+                        <p class="text-xs text-gray-500">经典童话 · 7分钟</p>
+                    </div>
+                    <div class="story-card bg-white p-3 w-40">
+                        <img src="https://images.unsplash.com/photo-1530041686259-53d26f863313?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGZhaXJ5JTIwdGFsZXxlbnwwfHwwfHx8MA%3D%3D" alt="灰姑娘" class="rounded-lg h-32 w-full object-cover mb-2">
+                        <h3 class="font-medium">灰姑娘</h3>
+                        <p class="text-xs text-gray-500">经典童话 · 9分钟</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 睡眠倒计时 -->
+        <section class="mb-6">
+            <div class="bg-white rounded-2xl p-5">
+                <h2 class="text-xl font-semibold mb-3 flex items-center">
+                    <i class="fas fa-moon text-yellow-400 mr-2"></i>睡眠倒计时
+                </h2>
+                <div class="flex justify-between items-center">
+                    <div class="timer-circle pulse-animation">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold">30</div>
+                            <div class="text-xs">分钟</div>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <button class="bg-primary-blue text-white py-2 px-4 rounded-full w-full flex items-center justify-center">
+                            <i class="fas fa-play mr-2"></i>开始
+                        </button>
+                        <button class="bg-gray-200 text-gray-700 py-2 px-4 rounded-full w-full flex items-center justify-center">
+                            <i class="fas fa-cog mr-2"></i>设置
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 今日故事推荐 -->
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 flex items-center">
+                <i class="fas fa-star text-yellow-500 mr-2"></i>今日推荐
+            </h2>
+            <div class="story-card bg-white p-4 rounded-2xl">
+                <div class="flex">
+                    <img src="https://images.unsplash.com/photo-1633613286991-611fe299c4be?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZHJhZ29ufGVufDB8fDB8fHww" alt="龙的传说" class="h-24 w-24 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg">龙的传说</h3>
+                        <p class="text-gray-600 text-sm mb-2">一个关于中国传统神兽的精彩故事</p>
+                        <div class="flex items-center">
+                            <div class="bg-primary-green text-white text-xs py-1 px-2 rounded-full mr-2">新故事</div>
+                            <div class="text-gray-500 text-xs">10分钟</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="bg-primary-blue text-white py-2 px-4 rounded-full w-full mt-3 flex items-center justify-center">
+                    <i class="fas fa-headphones mr-2"></i>立即收听
+                </button>
+            </div>
+        </section>
+        
+        <!-- 摇篮曲 -->
+        <section class="mb-6">
+            <h2 class="text-xl font-semibold mb-3 flex items-center">
+                <i class="fas fa-music text-purple-500 mr-2"></i>摇篮曲
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="story-card bg-white p-3 rounded-xl">
+                    <div class="h-20 bg-purple-100 rounded-lg flex items-center justify-center mb-2">
+                        <i class="fas fa-music text-3xl text-purple-500"></i>
+                    </div>
+                    <h3 class="font-medium text-center">世界名曲</h3>
+                </div>
+                <div class="story-card bg-white p-3 rounded-xl">
+                    <div class="h-20 bg-blue-100 rounded-lg flex items-center justify-center mb-2">
+                        <i class="fas fa-music text-3xl text-blue-500"></i>
+                    </div>
+                    <h3 class="font-medium text-center">中国童谣</h3>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 播放栏 -->
+    <div class="player-bar fixed bottom-16 left-0 right-0 px-4 flex items-center justify-between">
+        <div class="flex items-center">
+            <img src="https://images.unsplash.com/photo-1603486002664-a7319421e133?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fGZhaXJ5JTIwdGFsZXxlbnwwfHwwfHx8MA%3D%3D" alt="正在播放" class="h-12 w-12 rounded-lg mr-3">
+            <div>
+                <h3 class="font-medium">三只小猪</h3>
+                <p class="text-xs text-gray-500">02:45 / 06:30</p>
+            </div>
+        </div>
+        <div class="flex space-x-3">
+            <button class="h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-step-backward text-gray-600"></i>
+            </button>
+            <button class="h-12 w-12 bg-primary-blue rounded-full flex items-center justify-center text-white">
+                <i class="fas fa-pause"></i>
+            </button>
+            <button class="h-10 w-10 bg-gray-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-step-forward text-gray-600"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="nav-bar flex justify-around items-center">
+        <a href="first_page.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-primary-green flex items-center justify-center text-white">
+                <i class="fas fa-home text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-primary-green">首页</span>
+        </a>
+        <a href="story_store.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fas fa-book text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-gray-500">故事库</span>
+        </a>
+        <a href="profile.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fas fa-user text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-gray-500">我的</span>
+        </a>
+    </div>
+    
+    <script>
+        // 添加一些简单的交互
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取所有故事卡片
+            const storyCards = document.querySelectorAll('.story-card');
+            
+            // 为每个故事卡片添加点击事件
+            storyCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    alert('开始播放故事');
+                });
+            });
+            
+            // 睡眠倒计时按钮
+            const startButton = document.querySelector('.timer-circle + div button:first-child');
+            startButton.addEventListener('click', function() {
+                alert('开始睡眠倒计时');
+            });
+        });
+    </script>
+</body>
+</html> 

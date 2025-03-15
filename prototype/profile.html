@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的 - 儿童听故事</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #8BC34A;
+            --primary-blue: #64B5F6;
+            --bg-color: #F9FBE7;
+        }
+        body {
+            background-color: var(--bg-color);
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .status-bar {
+            height: 44px;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .nav-bar {
+            height: 65px;
+            background-color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 50;
+            box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+        }
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+            border-radius: 0 0 30px 30px;
+            padding: 30px 20px;
+            color: white;
+        }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            object-fit: cover;
+        }
+        .menu-item {
+            border-radius: 16px;
+            transition: transform 0.2s;
+        }
+        .menu-item:hover {
+            transform: translateX(5px);
+        }
+        .voice-card {
+            border-radius: 16px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        .voice-card:hover {
+            transform: translateY(-3px);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+        }
+        /* 首次引导样式 */
+        .guide-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .guide-content {
+            background-color: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 350px;
+            padding: 30px;
+            text-align: center;
+        }
+        .guide-step {
+            display: none;
+        }
+        .guide-step.active {
+            display: block;
+        }
+        .guide-dots {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .guide-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+        .guide-dot.active {
+            background-color: var(--primary-green);
+        }
+    </style>
+</head>
+<body class="pb-16">
+    <!-- 状态栏 -->
+    <div class="status-bar flex items-center justify-between px-5">
+        <div class="text-sm">20:30</div>
+        <div class="flex space-x-2">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+        </div>
+    </div>
+    
+    <!-- 个人资料头部 -->
+    <div class="profile-header">
+        <div class="flex items-center">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cG9ydHJhaXR8ZW58MHx8MHx8fDA%3D" alt="用户头像" class="avatar mr-4">
+            <div>
+                <h1 class="text-xl font-bold">小明妈妈</h1>
+                <p class="text-white text-opacity-80">会员：普通会员</p>
+                <div class="bg-white bg-opacity-20 rounded-full py-1 px-3 mt-2 inline-block text-sm">
+                    <i class="fas fa-user-edit mr-1"></i>编辑资料
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 宝宝信息 -->
+    <div class="bg-white rounded-2xl mx-4 p-4 -mt-5 shadow-md">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                    <i class="fas fa-baby text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold">小明</h2>
+                    <p class="text-gray-500 text-sm">男孩 · 4岁</p>
+                </div>
+            </div>
+            <button class="bg-primary-blue bg-opacity-10 text-primary-blue py-1 px-3 rounded-full text-sm">
+                修改
+            </button>
+        </div>
+    </div>
+    
+    <!-- 我的声音库 -->
+    <div class="mx-4 mt-6">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-semibold">我的声音库</h2>
+            <button class="bg-primary-green text-white py-1 px-3 rounded-full text-sm flex items-center" id="add-voice-btn">
+                <i class="fas fa-plus mr-1"></i>添加
+            </button>
+        </div>
+        
+        <div class="space-y-4">
+            <!-- 系统默认声音 -->
+            <div class="voice-card bg-white p-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-3">
+                            <i class="fas fa-volume-up text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">系统女声</h3>
+                            <p class="text-gray-500 text-sm">默认</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                            <i class="fas fa-play text-sm"></i>
+                        </button>
+                        <div class="h-8 w-8 rounded-full bg-primary-green flex items-center justify-center text-white">
+                            <i class="fas fa-check text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 系统男声 -->
+            <div class="voice-card bg-white p-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                            <i class="fas fa-volume-up text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">系统男声</h3>
+                            <p class="text-gray-500 text-sm">标准</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                            <i class="fas fa-play text-sm"></i>
+                        </button>
+                        <div class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                            <i class="far fa-circle text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 自定义声音 -->
+            <div class="voice-card bg-white p-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 mr-3">
+                            <i class="fas fa-microphone text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold">妈妈的声音</h3>
+                            <p class="text-gray-500 text-sm">自定义</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                            <i class="fas fa-play text-sm"></i>
+                        </button>
+                        <button class="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                            <i class="far fa-circle text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 其他菜单项 -->
+    <div class="mx-4 mt-6 space-y-4">
+        <div class="menu-item bg-white p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center text-red-500 mr-3">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <span class="font-medium">我的收藏</span>
+            </div>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+        </div>
+        
+        <div class="menu-item bg-white p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-500 mr-3">
+                    <i class="fas fa-history"></i>
+                </div>
+                <span class="font-medium">播放历史</span>
+            </div>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+        </div>
+        
+        <div class="menu-item bg-white p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 mr-3">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <span class="font-medium">设置</span>
+            </div>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+        </div>
+        
+        <div class="menu-item bg-white p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500 mr-3">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <span class="font-medium">联系客服</span>
+            </div>
+            <i class="fas fa-chevron-right text-gray-400"></i>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="nav-bar flex justify-around items-center">
+        <a href="first_page.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fas fa-home text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-gray-500">首页</span>
+        </a>
+        <a href="story_store.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fas fa-book text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-gray-500">故事库</span>
+        </a>
+        <a href="profile.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-primary-green flex items-center justify-center text-white">
+                <i class="fas fa-user text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-primary-green">我的</span>
+        </a>
+    </div>
+    
+    <!-- 添加声音模态框 -->
+    <div class="modal" id="add-voice-modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">添加声音</h3>
+                <button class="text-gray-500" id="close-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label class="block text-gray-700">声音名称</label>
+                    <input type="text" class="w-full border border-gray-300 rounded-lg p-2 outline-none focus:border-primary-blue" placeholder="例如：爸爸的声音">
+                </div>
+                
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                    <div class="h-16 w-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 mx-auto mb-2">
+                        <i class="fas fa-microphone text-2xl"></i>
+                    </div>
+                    <p class="text-gray-700 mb-2">点击录制您的声音</p>
+                    <button class="bg-primary-blue text-white py-2 px-4 rounded-full text-sm inline-flex items-center">
+                        <i class="fas fa-microphone-alt mr-1"></i>开始录制
+                    </button>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="bg-primary-green text-white py-2 px-8 rounded-full">
+                        保存
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 首次使用引导 -->
+    <div class="guide-overlay" id="guide-overlay">
+        <div class="guide-content">
+            <!-- 步骤1：个人信息 -->
+            <div class="guide-step active" id="guide-step-1">
+                <div class="h-20 w-20 rounded-full bg-primary-blue bg-opacity-20 flex items-center justify-center text-primary-blue mx-auto mb-4">
+                    <i class="fas fa-user-circle text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">完善个人信息</h3>
+                <p class="text-gray-600 mb-4">请设置您的名称和头像，让我们更好地为您服务</p>
+                <div class="space-y-3">
+                    <input type="text" class="w-full border border-gray-300 rounded-lg p-2 outline-none" placeholder="请输入您的昵称">
+                    <button class="bg-gray-200 text-gray-700 py-2 px-4 rounded-lg w-full">
+                        选择头像
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 步骤2：宝宝信息 -->
+            <div class="guide-step" id="guide-step-2">
+                <div class="h-20 w-20 rounded-full bg-green-100 flex items-center justify-center text-green-500 mx-auto mb-4">
+                    <i class="fas fa-baby text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">宝宝信息</h3>
+                <p class="text-gray-600 mb-4">告诉我们宝宝的基本信息，我们将提供更适合的内容</p>
+                <div class="space-y-3">
+                    <input type="text" class="w-full border border-gray-300 rounded-lg p-2 outline-none" placeholder="宝宝名称">
+                    <div class="grid grid-cols-2 gap-2">
+                        <select class="border border-gray-300 rounded-lg p-2 outline-none">
+                            <option>请选择性别</option>
+                            <option>男孩</option>
+                            <option>女孩</option>
+                        </select>
+                        <select class="border border-gray-300 rounded-lg p-2 outline-none">
+                            <option>请选择年龄</option>
+                            <option>0-1岁</option>
+                            <option>2-3岁</option>
+                            <option>4-5岁</option>
+                            <option>6岁以上</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 步骤3：声音设置 -->
+            <div class="guide-step" id="guide-step-3">
+                <div class="h-20 w-20 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 mx-auto mb-4">
+                    <i class="fas fa-microphone-alt text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">声音设置</h3>
+                <p class="text-gray-600 mb-4">选择您喜欢的声音为宝宝讲故事</p>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-volume-up text-primary-blue mr-2"></i>
+                            <span>系统女声</span>
+                        </div>
+                        <input type="radio" name="voice" checked>
+                    </div>
+                    <div class="flex items-center justify-between bg-gray-100 p-3 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-volume-up text-primary-blue mr-2"></i>
+                            <span>系统男声</span>
+                        </div>
+                        <input type="radio" name="voice">
+                    </div>
+                    <button class="bg-primary-blue bg-opacity-10 text-primary-blue py-2 px-4 rounded-lg w-full">
+                        <i class="fas fa-plus mr-1"></i>添加自己的声音
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 向导控制按钮 -->
+            <div class="flex justify-between mt-6">
+                <button class="text-gray-500 py-2 px-4" id="guide-prev-btn">上一步</button>
+                <div class="guide-dots">
+                    <span class="guide-dot active"></span>
+                    <span class="guide-dot"></span>
+                    <span class="guide-dot"></span>
+                </div>
+                <button class="text-primary-blue py-2 px-4 font-medium" id="guide-next-btn">下一步</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加声音模态框
+            const addVoiceBtn = document.getElementById('add-voice-btn');
+            const addVoiceModal = document.getElementById('add-voice-modal');
+            const closeModalBtn = document.getElementById('close-modal');
+            
+            addVoiceBtn.addEventListener('click', function() {
+                addVoiceModal.style.display = 'flex';
+            });
+            
+            closeModalBtn.addEventListener('click', function() {
+                addVoiceModal.style.display = 'none';
+            });
+            
+            // 首次使用引导
+            const guideOverlay = document.getElementById('guide-overlay');
+            const guideSteps = document.querySelectorAll('.guide-step');
+            const guideDots = document.querySelectorAll('.guide-dot');
+            const guidePrevBtn = document.getElementById('guide-prev-btn');
+            const guideNextBtn = document.getElementById('guide-next-btn');
+            
+            let currentStep = 0;
+            
+            // 显示或隐藏上一步按钮
+            guidePrevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+            
+            // 更新引导步骤
+            function updateGuideStep() {
+                guideSteps.forEach((step, index) => {
+                    step.classList.toggle('active', index === currentStep);
+                });
+                
+                guideDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentStep);
+                });
+                
+                guidePrevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+                
+                if (currentStep === guideSteps.length - 1) {
+                    guideNextBtn.textContent = '完成';
+                } else {
+                    guideNextBtn.textContent = '下一步';
+                }
+            }
+            
+            // 下一步按钮
+            guideNextBtn.addEventListener('click', function() {
+                if (currentStep < guideSteps.length - 1) {
+                    currentStep++;
+                    updateGuideStep();
+                } else {
+                    // 最后一步，关闭引导
+                    guideOverlay.style.display = 'none';
+                }
+            });
+            
+            // 上一步按钮
+            guidePrevBtn.addEventListener('click', function() {
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateGuideStep();
+                }
+            });
+            
+            // 简易检测是否首次访问
+            const isFirstVisit = true; // 这里应该是从存储中读取
+            
+            if (!isFirstVisit) {
+                guideOverlay.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 

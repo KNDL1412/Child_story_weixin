@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>故事库 - 儿童听故事</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-green: #8BC34A;
+            --primary-blue: #64B5F6;
+            --bg-color: #F9FBE7;
+        }
+        body {
+            background-color: var(--bg-color);
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+        }
+        .status-bar {
+            height: 44px;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .nav-bar {
+            height: 65px;
+            background-color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 50;
+            box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+        }
+        .story-card {
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        .story-card:hover {
+            transform: translateY(-3px);
+        }
+        .category-btn {
+            border-radius: 50px;
+            padding: 10px 20px;
+            transition: all 0.3s;
+        }
+        .category-btn.active {
+            background-color: var(--primary-green);
+            color: white;
+            box-shadow: 0 4px 8px rgba(139, 195, 74, 0.3);
+        }
+        .search-bar {
+            border-radius: 50px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+        .story-list-item {
+            border-radius: 16px;
+            transition: transform 0.2s;
+        }
+        .story-list-item:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="pb-16">
+    <!-- 状态栏 -->
+    <div class="status-bar flex items-center justify-between px-5">
+        <div class="text-sm">20:30</div>
+        <div class="flex space-x-2">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+        </div>
+    </div>
+    
+    <!-- 内容区域 -->
+    <div class="container mx-auto px-4 pt-2 pb-20">
+        <!-- 头部标题 -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">故事库</h1>
+            <div class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                <i class="fas fa-heart text-red-400"></i>
+            </div>
+        </div>
+        
+        <!-- 搜索栏 -->
+        <div class="mb-6">
+            <div class="search-bar bg-white p-3 flex items-center">
+                <i class="fas fa-search text-gray-400 mx-3"></i>
+                <input type="text" placeholder="搜索想听的故事..." class="flex-1 outline-none text-gray-700">
+            </div>
+        </div>
+        
+        <!-- 分类标签 -->
+        <div class="mb-6">
+            <div class="overflow-x-auto">
+                <div class="flex space-x-3 py-2" style="width: max-content;">
+                    <button class="category-btn active bg-primary-green text-white font-medium" id="btn-normal">
+                        <i class="fas fa-book-open mr-2"></i>普通故事
+                    </button>
+                    <button class="category-btn bg-white text-gray-700 font-medium" id="btn-pinyin">
+                        <i class="fas fa-language mr-2"></i>拼音故事
+                    </button>
+                    <button class="category-btn bg-white text-gray-700 font-medium" id="btn-bilingual">
+                        <i class="fas fa-globe-asia mr-2"></i>双语故事
+                    </button>
+                    <button class="category-btn bg-white text-gray-700 font-medium" id="btn-science">
+                        <i class="fas fa-microscope mr-2"></i>科普知识
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 故事列表 - 普通故事 -->
+        <div class="story-section" id="normal-stories">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">普通故事</h2>
+                <a href="#" class="text-primary-blue flex items-center">
+                    查看全部 <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                </a>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- 故事项 1 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1583160247711-2191776b4b91?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGZhaXJ5JTIwdGFsZXxlbnwwfHwwfHx8MA%3D%3D" alt="白雪公主" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">白雪公主</h3>
+                        <p class="text-gray-600 text-sm">经典童话故事</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">8分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                
+                <!-- 故事项 2 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHdvbGZ8ZW58MHx8MHx8fDA%3D" alt="小红帽" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">小红帽</h3>
+                        <p class="text-gray-600 text-sm">经典童话故事</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="far fa-star text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">7分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                
+                <!-- 故事项 3 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1597322554556-6a7080400520?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHBpZ3xlbnwwfHwwfHx8MA%3D%3D" alt="三只小猪" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">三只小猪</h3>
+                        <p class="text-gray-600 text-sm">经典童话故事</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star-half-alt text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">6分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                
+                <!-- 故事项 4 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1511417592675-15d9c626b5da?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmVhdXR5JTIwYW5kJTIwdGhlJTIwYmVhc3R8ZW58MHx8MHx8fDA%3D" alt="美女与野兽" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">美女与野兽</h3>
+                        <p class="text-gray-600 text-sm">经典童话故事</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="far fa-star text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">9分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 故事列表 - 拼音故事 (默认隐藏) -->
+        <div class="story-section hidden" id="pinyin-stories">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">拼音故事</h2>
+                <a href="#" class="text-primary-blue flex items-center">
+                    查看全部 <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                </a>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- 拼音故事项 1 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YWxwaGFiZXR8ZW58MHx8MHx8fDA%3D" alt="拼音启蒙" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">拼音启蒙故事</h3>
+                        <p class="text-gray-600 text-sm">声母韵母学习</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">5分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                
+                <!-- 拼音故事项 2 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1627556592933-ffe99c1cd9eb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2hpbmVzZSUyMHdyaXRpbmd8ZW58MHx8MHx8fDA%3D" alt="拼音童谣" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">拼音童谣</h3>
+                        <p class="text-gray-600 text-sm">经典童谣拼音版</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="far fa-star text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">4分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 故事列表 - 双语故事 (默认隐藏) -->
+        <div class="story-section hidden" id="bilingual-stories">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">双语故事</h2>
+                <a href="#" class="text-primary-blue flex items-center">
+                    查看全部 <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                </a>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- 双语故事项 1 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1578898887932-7be3a5ad8efd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2luZGVyZWxsYXxlbnwwfHwwfHx8MA%3D%3D" alt="灰姑娘" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">灰姑娘 (中英双语)</h3>
+                        <p class="text-gray-600 text-sm">经典童话双语版</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star-half-alt text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">10分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                
+                <!-- 双语故事项 2 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1610337673044-720471f83677?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGVuZ2xpc2h8ZW58MHx8MHx8fDA%3D" alt="小王子" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">小王子 (中英双语)</h3>
+                        <p class="text-gray-600 text-sm">世界名著双语版</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">12分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 故事列表 - 科普知识 (默认隐藏) -->
+        <div class="story-section hidden" id="science-stories">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">科普知识</h2>
+                <a href="#" class="text-primary-blue flex items-center">
+                    查看全部 <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                </a>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- 科普故事项 1 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZGlub3NhdXJ8ZW58MHx8MHx8fDA%3D" alt="恐龙世界" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">恐龙世界探秘</h3>
+                        <p class="text-gray-600 text-sm">古生物科普</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">8分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                
+                <!-- 科普故事项 2 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3BhY2V8ZW58MHx8MHx8fDA%3D" alt="太空探索" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">太空探索之旅</h3>
+                        <p class="text-gray-600 text-sm">宇宙科普</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="far fa-star text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">7分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                
+                <!-- 科普故事项 3 -->
+                <div class="story-list-item bg-white p-4 flex items-center">
+                    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bW91bnRhaW58ZW58MHx8MHx8fDA%3D" alt="地理奇观" class="h-16 w-16 rounded-xl object-cover mr-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold">地球奇观之旅</h3>
+                        <p class="text-gray-600 text-sm">地理科普</p>
+                        <div class="flex items-center mt-1">
+                            <div class="text-yellow-500 flex mr-3">
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star text-xs"></i>
+                                <i class="fas fa-star-half-alt text-xs"></i>
+                            </div>
+                            <div class="text-gray-500 text-xs">9分钟</div>
+                        </div>
+                    </div>
+                    <button class="h-10 w-10 rounded-full bg-primary-blue text-white flex items-center justify-center">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航 -->
+    <div class="nav-bar flex justify-around items-center">
+        <a href="first_page.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fas fa-home text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-gray-500">首页</span>
+        </a>
+        <a href="story_store.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-primary-green flex items-center justify-center text-white">
+                <i class="fas fa-book text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-primary-green">故事库</span>
+        </a>
+        <a href="profile.html" class="flex flex-col items-center">
+            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                <i class="fas fa-user text-lg"></i>
+            </div>
+            <span class="text-xs font-medium mt-1 text-gray-500">我的</span>
+        </a>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取所有分类按钮和故事区域
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            const storySection = document.querySelectorAll('.story-section');
+            
+            // 为每个分类按钮添加点击事件
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    
+                    // 为当前点击的按钮添加active类
+                    this.classList.add('active');
+                    
+                    // 隐藏所有故事区域
+                    storySection.forEach(section => section.classList.add('hidden'));
+                    
+                    // 显示对应的故事区域
+                    const btnId = this.id;
+                    let targetSection;
+                    
+                    if (btnId === 'btn-normal') {
+                        targetSection = document.getElementById('normal-stories');
+                    } else if (btnId === 'btn-pinyin') {
+                        targetSection = document.getElementById('pinyin-stories');
+                    } else if (btnId === 'btn-bilingual') {
+                        targetSection = document.getElementById('bilingual-stories');
+                    } else if (btnId === 'btn-science') {
+                        targetSection = document.getElementById('science-stories');
+                    }
+                    
+                    if (targetSection) {
+                        targetSection.classList.remove('hidden');
+                    }
+                });
+            });
+            
+            // 获取所有故事项
+            const storyItems = document.querySelectorAll('.story-list-item');
+            
+            // 为每个故事项添加点击事件
+            storyItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const storyTitle = this.querySelector('h3').textContent;
+                    alert('开始播放: ' + storyTitle);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

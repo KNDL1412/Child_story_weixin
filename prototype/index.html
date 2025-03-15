@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>儿童听故事小程序 - 原型设计</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #F9FBE7;
+        }
+        .phone-frame {
+            width: 430px;
+            height: 932px;
+            border-radius: 55px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+            background-color: white;
+            border: 12px solid #333;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 35px;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto py-8 px-4">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-bold text-green-600 mb-2">儿童听故事小程序</h1>
+            <p class="text-xl text-blue-500">原型设计展示</p>
+        </header>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+            <!-- 首页预览 -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-center mb-4 text-green-700">首页</h2>
+                <div class="phone-frame">
+                    <div class="iframe-container">
+                        <iframe src="first_page.html" title="首页原型"></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 故事库预览 -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-center mb-4 text-green-700">故事库</h2>
+                <div class="phone-frame">
+                    <div class="iframe-container">
+                        <iframe src="story_store.html" title="故事库原型"></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 我的页面预览 -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-center mb-4 text-green-700">我的</h2>
+                <div class="phone-frame">
+                    <div class="iframe-container">
+                        <iframe src="profile.html" title="我的页面原型"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
