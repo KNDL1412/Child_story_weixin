@@ -1,62 +1,599 @@
 /**index.wxss**/
+
 page {
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.scrollarea {
-  flex: 1;
-  overflow-y: hidden;
+  background-color: #F9FBE7;
+  font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
 }
 
-.userinfo {
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* 状态栏 */
+.status-bar {
+  height: 44px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #F9FBE7;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.status-icons {
+  display: flex;
+  gap: 8px;
+}
+
+/* 内容区域 */
+.content-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px;
+  padding-bottom: 70px; /* 为播放栏预留空间 */
+}
+
+/* 欢迎头部 */
+.welcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  margin-top: 8px;
+}
+
+.welcome-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.welcome-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.notification-icon {
+  width: 48px;
+  height: 48px;
+  background-color: #64B5F6;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+}
+
+/* 内容分区 */
+.section {
+  margin-bottom: 24px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.section-icon {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+/* 故事卡片和滚动 */
+.story-scroll {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.story-scroll-container {
+  display: inline-flex;
+  padding: 8px 0;
+}
+
+.story-card {
+  width: 160px;
+  background-color: white;
+  border-radius: 20px;
+  padding: 12px;
+  margin-right: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  display: inline-block;
+}
+
+.story-image {
+  width: 100%;
+  height: 128px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.story-title {
+  font-weight: 500;
+  font-size: 14px;
+  color: #333;
+  display: block;
+}
+
+.story-info {
+  font-size: 12px;
+  color: #999;
+  display: block;
+}
+
+/* 睡眠倒计时 */
+.timer-box {
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.timer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timer-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8BC34A, #64B5F6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 15px rgba(100, 181, 246, 0.4);
+}
+
+.timer-text {
+  text-align: center;
+}
+
+.timer-number {
+  font-size: 30px;
+  font-weight: bold;
+  display: block;
+}
+
+.timer-unit {
+  font-size: 12px;
+}
+
+.timer-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.timer-button {
+  border-radius: 50px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.timer-button.primary {
+  background-color: #64B5F6;
+  color: white;
+}
+
+.timer-button.secondary {
+  background-color: #eee;
+  color: #666;
+}
+
+/* 今日推荐 */
+.recommendation-card {
+  background-color: white;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.recommendation-content {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.recommendation-image {
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.recommendation-info {
+  flex: 1;
+}
+
+.recommendation-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  display: block;
+}
+
+.recommendation-desc {
+  font-size: 14px;
+  color: #666;
+  margin: 8px 0;
+  display: block;
+}
+
+.recommendation-meta {
+  display: flex;
+  align-items: center;
+}
+
+.recommendation-tag {
+  background-color: #8BC34A;
+  color: white;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 50px;
+  margin-right: 8px;
+}
+
+.recommendation-time {
+  font-size: 12px;
+  color: #999;
+}
+
+.listen-button {
+  background-color: #64B5F6;
+  color: white;
+  border-radius: 50px;
+  width: 100%;
+  padding: 10px 0;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* 摇篮曲 */
+.lullaby-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.lullaby-card {
+  background-color: white;
+  border-radius: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #aaa;
-  width: 80%;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
-.userinfo-avatar {
-  overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
+.lullaby-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  font-size: 24px;
+}
+
+.lullaby-icon.world {
+  background-color: #fff1e6;
+  color: #fd9843;
+}
+
+.lullaby-icon.chinese {
+  background-color: #e6f0ff;
+  color: #6f9cde;
+}
+
+.lullaby-title {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* 播放栏 */
+.player-bar {
+  height: 70px;
+  background-color: white;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  position: fixed;
+  bottom: 50px;
+  left: 0;
+  right: 0;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 49;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+}
+
+.player-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  margin-right: 12px;
+}
+
+.player-title {
+  font-weight: 500;
+  font-size: 14px;
+  display: block;
+}
+
+.player-progress {
+  font-size: 12px;
+  color: #999;
+  display: block;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
 }
 
-.usermotto {
-  margin-top: 200px;
+.control-button.small {
+  width: 40px;
+  height: 40px;
+  background-color: #f5f5f5;
+  color: #666;
 }
 
-.avatar-wrapper {
-  padding: 0;
-  width: 56px !important;
-  border-radius: 8px;
-  margin-top: 40px;
-  margin-bottom: 40px;
+.control-button.large {
+  width: 48px;
+  height: 48px;
+  background-color: #64B5F6;
+  color: white;
 }
 
-.avatar {
-  display: block;
-  width: 56px;
-  height: 56px;
+/* 动画 */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
-.nickname-wrapper {
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+/* 为计时器活动状态添加样式 */
+.timer-circle.active-timer {
+  background-color: #a5d6a7;
+  animation: pulse-green 1.5s infinite;
+}
+
+@keyframes pulse-green {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(165, 214, 167, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 15px rgba(165, 214, 167, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(165, 214, 167, 0);
+  }
+}
+
+/* 模态框样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
   display: flex;
-  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content {
+  position: relative;
+  width: 80%;
+  max-width: 600rpx;
+  background-color: white;
+  border-radius: 20px;
+  overflow: hidden;
+  z-index: 1001;
+}
+
+.modal-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.modal-footer {
+  display: flex;
   padding: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* 倒计时设置样式 */
+.time-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.time-option {
+  flex: 1 0 28%;
+  background-color: #f5f5f5;
+  padding: 12px 0;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.time-option:hover, .time-option:active {
+  background-color: #e0f7fa;
+}
+
+.custom-time {
+  margin-top: 16px;
+}
+
+.custom-time-label {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.custom-time-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0 12px;
   box-sizing: border-box;
-  border-top: .5px solid rgba(0, 0, 0, 0.1);
-  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
-  color: black;
+  font-size: 14px;
 }
 
-.nickname-label {
-  width: 105px;
-}
-
-.nickname-input {
+.cancel-btn, .save-btn {
   flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cancel-btn {
+  background-color: #f5f5f5;
+  color: #666;
+  margin-right: 12px;
+}
+
+.save-btn {
+  background-color: #8BC34A;
+  color: white;
+}
+
+/* 播放目录样式 */
+.playlist-container {
+  max-height: 400rpx;
+  overflow-y: auto;
+}
+
+.playlist-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.playlist-item.active {
+  background-color: #e3f2fd;
+}
+
+.playlist-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-item-title {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.playlist-item-duration {
+  font-size: 12px;
+  color: #999;
+}
+
+.playlist-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.playlist-action {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+}
+
+.playlist-action.remove {
+  background-color: #ffebee;
+  color: #ef5350;
+}
+
+/* 禁用按钮样式 */
+.timer-button[disabled] {
+  background-color: #cccccc;
+  color: #999;
 }

@@ -1,8 +1,8 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/story_store/story_store",
-    "pages/profile/profile"
+    "children_story/pages/index/index",
+    "children_story/pages/story_store/story_store",
+    "children_story/pages/profile/profile"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -15,24 +15,22 @@
     "selectedColor": "#8BC34A",
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
-    "fontSize": "16px",
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "children_story/pages/index/index",
         "text": "首页"
       },
       {
-        "pagePath": "pages/story_store/story_store",
+        "pagePath": "children_story/pages/story_store/story_store",
         "text": "故事库"
       },
       {
-        "pagePath": "pages/profile/profile",
+        "pagePath": "children_story/pages/profile/profile",
         "text": "我的"
       }
     ]
   },
   "style": "v2",
-  "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
   "lazyCodeLoading": "requiredComponents"
-}
+} 

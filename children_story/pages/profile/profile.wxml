@@ -1,0 +1,446 @@
+<!--profile.wxml-->
+<view class="container">
+  <!-- 状态栏 -->
+  <view class="status-bar">
+    <text class="time">20:30</text>
+    <view class="status-icons">
+      <text class="signal">📶</text>
+      <text class="wifi">📡</text>
+      <text class="battery">🔋</text>
+    </view>
+  </view>
+  
+  <!-- 内容区域 -->
+  <scroll-view class="content-area" scroll-y>
+    <!-- 个人信息卡片 -->
+    <view class="profile-card">
+      <view class="profile-header">
+        <image class="avatar" src="{{userInfo.avatar}}"/>
+        <view class="profile-info">
+          <text class="username">{{userInfo.username}}</text>
+          <view class="profile-stats">
+            <view class="stat">
+              <text class="stat-num">{{userInfo.listenedCount}}</text>
+              <text class="stat-label">已听故事</text>
+            </view>
+            <view class="stat">
+              <text class="stat-num">{{userInfo.favoritesCount}}</text>
+              <text class="stat-label">收藏故事</text>
+            </view>
+          </view>
+        </view>
+        <view class="edit-profile" bindtap="editProfile">
+          <text class="edit-icon">✏️</text>
+        </view>
+      </view>
+      
+      <!-- 会员信息 -->
+      <view class="vip-info">
+        <view class="vip-badge">
+          <text class="vip-icon">👑</text>
+          <text class="vip-text">童声故事会员</text>
+        </view>
+        <text class="vip-expire">有效期至: {{memberInfo.expireDate}}</text>
+      </view>
+    </view>
+    
+    <!-- 宝宝信息 -->
+    <view class="baby-info" wx:if="{{babyInfo}}">
+      <view class="baby-header">
+        <view class="baby-avatar">
+          <text class="baby-icon">👶</text>
+        </view>
+        <view class="baby-details">
+          <text class="baby-name">{{babyInfo.name}}</text>
+          <text class="baby-meta">{{babyInfo.gender}} · {{babyInfo.age}}</text>
+        </view>
+        <view class="edit-baby" bindtap="editBabyInfo">
+          <text>修改</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 我的声音库 -->
+    <view class="voice-library">
+      <view class="section-header">
+        <text class="section-title">我的声音库</text>
+        <view class="add-voice-btn" bindtap="showAddVoiceModal">
+          <text class="add-icon">+</text>
+          <text>添加</text>
+        </view>
+      </view>
+      
+      <!-- 声音列表 -->
+      <view class="voice-list">
+        <!-- 系统女声 -->
+        <view class="voice-card">
+          <view class="voice-info">
+            <view class="voice-avatar female">
+              <text class="voice-icon">🔊</text>
+            </view>
+            <view class="voice-details">
+              <text class="voice-name">系统女声</text>
+              <text class="voice-type">默认</text>
+            </view>
+          </view>
+          <view class="voice-actions">
+            <view class="voice-play" bindtap="playVoiceSample" data-voice="female">
+              <text class="action-icon">▶️</text>
+            </view>
+            <view class="voice-select selected">
+              <text class="action-icon">✓</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 系统男声 -->
+        <view class="voice-card">
+          <view class="voice-info">
+            <view class="voice-avatar male">
+              <text class="voice-icon">🔊</text>
+            </view>
+            <view class="voice-details">
+              <text class="voice-name">系统男声</text>
+              <text class="voice-type">标准</text>
+            </view>
+          </view>
+          <view class="voice-actions">
+            <view class="voice-play" bindtap="playVoiceSample" data-voice="male">
+              <text class="action-icon">▶️</text>
+            </view>
+            <view class="voice-select" bindtap="selectVoice" data-voice="male">
+              <text class="action-icon">○</text>
+            </view>
+          </view>
+        </view>
+        
+        <!-- 自定义声音 -->
+        <view class="voice-card" wx:if="{{customVoices.length > 0}}" wx:for="{{customVoices}}" wx:key="id">
+          <view class="voice-info">
+            <view class="voice-avatar custom">
+              <text class="voice-icon">🎤</text>
+            </view>
+            <view class="voice-details">
+              <text class="voice-name">{{item.name}}</text>
+              <text class="voice-type">自定义</text>
+            </view>
+          </view>
+          <view class="voice-actions">
+            <view class="voice-play" bindtap="playVoiceSample" data-voice="{{item.id}}">
+              <text class="action-icon">▶️</text>
+            </view>
+            <view class="voice-select {{item.selected ? 'selected' : ''}}" bindtap="selectVoice" data-voice="{{item.id}}">
+              <text class="action-icon">{{item.selected ? '✓' : '○'}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 功能列表 -->
+    <view class="features-list">
+      <view class="section-title">
+        <text>我的功能</text>
+      </view>
+      
+      <!-- 功能项 -->
+      <view class="feature-item" bindtap="goToHistory">
+        <view class="feature-icon history">📋</view>
+        <text class="feature-text">历史记录</text>
+        <text class="feature-arrow">></text>
+      </view>
+      
+      <view class="feature-item" bindtap="goToFavorites">
+        <view class="feature-icon favorites">❤️</view>
+        <text class="feature-text">我的收藏</text>
+        <text class="feature-arrow">></text>
+      </view>
+      
+      <view class="feature-item" bindtap="goToDownloads">
+        <view class="feature-icon downloads">📥</view>
+        <text class="feature-text">已下载故事</text>
+        <text class="feature-badge">3</text>
+        <text class="feature-arrow">></text>
+      </view>
+      
+      <view class="feature-item" bindtap="goToParentControl">
+        <view class="feature-icon parent-control">🔒</view>
+        <text class="feature-text">家长控制</text>
+        <text class="feature-arrow">></text>
+      </view>
+    </view>
+    
+    <!-- 通用设置 -->
+    <view class="features-list">
+      <view class="section-title">
+        <text>通用设置</text>
+      </view>
+      
+      <view class="feature-item" bindtap="goToSettings">
+        <view class="feature-icon settings">⚙️</view>
+        <text class="feature-text">设置</text>
+        <text class="feature-arrow">></text>
+      </view>
+      
+      <view class="feature-item" bindtap="goToHelp">
+        <view class="feature-icon help">❓</view>
+        <text class="feature-text">帮助与反馈</text>
+        <text class="feature-arrow">></text>
+      </view>
+      
+      <view class="feature-item" bindtap="goToAbout">
+        <view class="feature-icon about">ℹ️</view>
+        <text class="feature-text">关于童声故事</text>
+        <text class="feature-arrow">></text>
+      </view>
+    </view>
+    
+    <!-- 退出登录 -->
+    <view class="logout-button" bindtap="logout">
+      <text>退出登录</text>
+    </view>
+  </scroll-view>
+  
+  <!-- 播放栏 -->
+  <view class="player-bar" wx:if="{{isPlaying}}">
+    <view class="player-info">
+      <image src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cG9ydHJhaXR8ZW58MHx8MHx8fDA%3D" mode="aspectFill" class="player-thumb"></image>
+      <view>
+        <text class="player-title">白雪公主</text>
+        <text class="player-progress">03:15 / 08:00</text>
+      </view>
+    </view>
+    <view class="player-controls">
+      <view class="control-button small" bindtap="prevTrack">⏮</view>
+      <view class="control-button large" bindtap="togglePlay">{{isPaused ? '▶️' : '⏸'}}</view>
+      <view class="control-button small" bindtap="nextTrack">⏭</view>
+    </view>
+  </view>
+  
+  <!-- 添加声音模态框 -->
+  <view class="modal" wx:if="{{showAddVoiceModal}}">
+    <view class="modal-mask" bindtap="closeAddVoiceModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">添加声音</text>
+        <view class="close-btn" bindtap="closeAddVoiceModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">声音名称</text>
+          <input class="form-input" model:value="{{newVoiceName}}" placeholder="例如：妈妈的声音"/>
+        </view>
+        
+        <view class="record-box">
+          <view class="record-icon {{isRecording ? 'recording' : ''}}">
+            <text class="mic-icon">🎤</text>
+          </view>
+          <text class="record-text">{{recordStatusText}}</text>
+          <view class="record-btn {{isRecording ? 'stop' : ''}}" bindtap="toggleRecording">
+            <text>{{isRecording ? '停止录制' : '开始录制'}}</text>
+          </view>
+        </view>
+        
+        <view class="ai-voice-tips">
+          <text class="tips-title">录制提示：</text>
+          <text class="tips-content">请清晰朗读至少20句话，系统将学习您的声音特征生成AI声音。录制环境请保持安静。</text>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closeAddVoiceModal">取消</button>
+        <button class="save-btn" bindtap="saveVoice" disabled="{{!recordingComplete}}">保存</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 编辑个人信息模态框 -->
+  <view class="modal" wx:if="{{showEditProfileModal}}">
+    <view class="modal-mask" bindtap="closeEditProfileModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">编辑个人信息</text>
+        <view class="close-btn" bindtap="closeEditProfileModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">用户名称</text>
+          <input class="form-input" value="{{editUserInfo.username}}" bindinput="handleUsernameInput" placeholder="请输入您的名称"/>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">性别</text>
+          <radio-group class="gender-group" bindchange="handleGenderChange">
+            <label class="gender-option">
+              <radio value="男" checked="{{editUserInfo.gender === '男'}}"/>男
+            </label>
+            <label class="gender-option">
+              <radio value="女" checked="{{editUserInfo.gender === '女'}}"/>女
+            </label>
+          </radio-group>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closeEditProfileModal">取消</button>
+        <button class="save-btn" bindtap="saveEditProfile">保存</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 编辑宝宝信息模态框 -->
+  <view class="modal" wx:if="{{showEditBabyModal}}">
+    <view class="modal-mask" bindtap="closeEditBabyModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">编辑宝宝信息</text>
+        <view class="close-btn" bindtap="closeEditBabyModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">宝宝名称</text>
+          <input class="form-input" value="{{editBabyInfo.name}}" bindinput="handleBabyNameInput" placeholder="请输入宝宝名称"/>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">性别</text>
+          <radio-group class="gender-group" bindchange="handleBabyGenderChange">
+            <label class="gender-option">
+              <radio value="男孩" checked="{{editBabyInfo.gender === '男孩'}}"/>男孩
+            </label>
+            <label class="gender-option">
+              <radio value="女孩" checked="{{editBabyInfo.gender === '女孩'}}"/>女孩
+            </label>
+          </radio-group>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">年龄</text>
+          <picker bindchange="handleBabyAgeChange" value="{{ageIndex}}" range="{{ageRange}}">
+            <view class="picker-view">
+              {{editBabyInfo.age ? editBabyInfo.age : '请选择宝宝年龄'}}
+            </view>
+          </picker>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closeEditBabyModal">取消</button>
+        <button class="save-btn" bindtap="saveEditBaby">保存</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 首次使用引导蒙层 -->
+  <view class="guide-overlay" wx:if="{{showGuide}}">
+    <view class="guide-content">
+      <!-- 步骤1：个人信息 -->
+      <view class="guide-step {{currentGuideStep === 0 ? 'active' : ''}}" id="guide-step-1">
+        <view class="guide-icon user">
+          <text class="icon-content">👤</text>
+        </view>
+        <text class="guide-title">完善个人信息</text>
+        <text class="guide-desc">请设置您的名称和性别，让我们更好地为您服务</text>
+        <view class="guide-form">
+          <view class="form-item">
+            <input class="form-input" value="{{editUserInfo.username}}" bindinput="handleUsernameInput" placeholder="请输入您的昵称"/>
+          </view>
+          <view class="form-item">
+            <radio-group class="gender-group" bindchange="handleGenderChange">
+              <label class="gender-option">
+                <radio value="男" checked="{{editUserInfo.gender === '男'}}"/>男
+              </label>
+              <label class="gender-option">
+                <radio value="女" checked="{{editUserInfo.gender === '女'}}"/>女
+              </label>
+            </radio-group>
+          </view>
+          <view class="wechat-auth-btn" bindtap="getUserProfile">
+            <text class="wechat-icon">🔄</text>
+            <text>微信授权获取</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 步骤2：宝宝信息 -->
+      <view class="guide-step {{currentGuideStep === 1 ? 'active' : ''}}" id="guide-step-2">
+        <view class="guide-icon baby">
+          <text class="icon-content">👶</text>
+        </view>
+        <text class="guide-title">宝宝信息</text>
+        <text class="guide-desc">告诉我们宝宝的基本信息，我们将提供更适合的内容</text>
+        <view class="guide-form">
+          <view class="form-item">
+            <input class="form-input" value="{{editBabyInfo.name}}" bindinput="handleBabyNameInput" placeholder="宝宝名称"/>
+          </view>
+          <view class="form-item two-col">
+            <view class="col">
+              <radio-group class="gender-group" bindchange="handleBabyGenderChange">
+                <label class="gender-option">
+                  <radio value="男孩" checked="{{editBabyInfo.gender === '男孩'}}"/>男孩
+                </label>
+                <label class="gender-option">
+                  <radio value="女孩" checked="{{editBabyInfo.gender === '女孩'}}"/>女孩
+                </label>
+              </radio-group>
+            </view>
+            <view class="col">
+              <picker bindchange="handleBabyAgeChange" value="{{ageIndex}}" range="{{ageRange}}">
+                <view class="picker-view">
+                  {{editBabyInfo.age ? editBabyInfo.age : '请选择年龄'}}
+                </view>
+              </picker>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 步骤3：声音设置 -->
+      <view class="guide-step {{currentGuideStep === 2 ? 'active' : ''}}" id="guide-step-3">
+        <view class="guide-icon voice">
+          <text class="icon-content">🎤</text>
+        </view>
+        <text class="guide-title">声音设置</text>
+        <text class="guide-desc">选择您喜欢的声音为宝宝讲故事</text>
+        <view class="guide-form">
+          <view class="voice-option selected">
+            <view class="voice-option-info">
+              <text class="voice-option-icon">🔊</text>
+              <text class="voice-option-text">系统女声</text>
+            </view>
+            <radio checked/>
+          </view>
+          <view class="voice-option">
+            <view class="voice-option-info">
+              <text class="voice-option-icon">🔊</text>
+              <text class="voice-option-text">系统男声</text>
+            </view>
+            <radio/>
+          </view>
+          <view class="add-custom-voice" bindtap="showAddVoiceFromGuide">
+            <text class="custom-voice-icon">+</text>
+            <text class="custom-voice-text">添加自己的声音</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 引导控制按钮 -->
+      <view class="guide-controls">
+        <view class="guide-btn prev" bindtap="prevGuideStep" wx:if="{{currentGuideStep > 0}}">
+          <text>上一步</text>
+        </view>
+        <view class="guide-dots">
+          <view class="guide-dot {{currentGuideStep === 0 ? 'active' : ''}}"></view>
+          <view class="guide-dot {{currentGuideStep === 1 ? 'active' : ''}}"></view>
+          <view class="guide-dot {{currentGuideStep === 2 ? 'active' : ''}}"></view>
+        </view>
+        <view class="guide-btn next" bindtap="nextGuideStep">
+          <text>{{currentGuideStep === 2 ? '完成' : '下一步'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 

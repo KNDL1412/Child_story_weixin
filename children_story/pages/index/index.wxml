@@ -1,27 +1,216 @@
 <!--index.wxml-->
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
+<view class="container">
+  <!-- 状态栏 -->
+  <view class="status-bar">
+    
+    
+  </view>
+  
+  <!-- 内容区域 -->
+  <scroll-view class="content-area" scroll-y>
+    <!-- 头部欢迎 -->
+    <view class="welcome-header" style="position: relative; left: -24rpx; top: 0rpx">
+      <view>
+        <text class="welcome-title" style="position: relative; left: 22rpx; top: 0rpx">你好，小朋友！</text>
+        <view class="welcome-subtitle" style="position: relative; left: 22rpx; top: 0rpx">今天想听什么故事呢？</view>
+      </view>
+      <view class="notification-icon">🔔</view>
     </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+    
+    <!-- 热门儿童故事 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="section-icon">🔥</text>
+        <text>热门儿童故事</text>
+      </view>
+      <scroll-view class="story-scroll" scroll-x>
+        <view class="story-scroll-container">
+          <view class="story-card" data-title="白雪公主" bindtap="playStory">
+            <image src="https://images.unsplash.com/photo-1478940020726-e9e191651f1a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZmFpcnklMjB0YWxlfGVufDB8fDB8fHww" mode="aspectFill" class="story-image"></image>
+            <text class="story-title">白雪公主</text>
+            <text class="story-info">经典童话 · 8分钟</text>
+          </view>
+          <view class="story-card" data-title="三只小猪" bindtap="playStory">
+            <image src="https://images.unsplash.com/photo-1629196113796-2e8ee0eae086?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZmFpcnklMjB0YWxlfGVufDB8fDB8fHww" mode="aspectFill" class="story-image"></image>
+            <text class="story-title">三只小猪</text>
+            <text class="story-info">经典童话 · 6分钟</text>
+          </view>
+          <view class="story-card" data-title="小红帽" bindtap="playStory">
+            <image src="https://images.unsplash.com/photo-1527137342181-19aab11a8ee8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhaXJ5JTIwdGFsZXxlbnwwfHwwfHx8MA%3D%3D" mode="aspectFill" class="story-image"></image>
+            <text class="story-title">小红帽</text>
+            <text class="story-info">经典童话 · 7分钟</text>
+          </view>
+          <view class="story-card" data-title="灰姑娘" bindtap="playStory">
+            <image src="https://images.unsplash.com/photo-1530041686259-53d26f863313?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGZhaXJ5JTIwdGFsZXxlbnwwfHwwfHx8MA%3D%3D" mode="aspectFill" class="story-image"></image>
+            <text class="story-title">灰姑娘</text>
+            <text class="story-info">经典童话 · 9分钟</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+    
+    <!-- 睡眠倒计时 -->
+    <view class="section">
+      <view class="timer-box">
+        <view class="section-title">
+          <text class="section-icon">🌙</text>
+          <text>睡眠倒计时</text>
+        </view>
+        <view class="timer-content">
+          <view class="timer-circle {{timerRunning ? 'active-timer' : 'pulse-animation'}}">
+            <view class="timer-text">
+              <text class="timer-number">{{timerMinutes}}</text>
+              <text class="timer-unit">分</text>
+              <text class="timer-number">{{timerSeconds}}</text>
+              <text class="timer-unit">秒</text>
+            </view>
+          </view>
+          <view class="timer-buttons">
+            <button class="timer-button primary" bindtap="startTimer" disabled="{{timerRunning}}">{{timerRunning ? '计时中' : '开始'}}</button>
+            <button class="timer-button secondary" bindtap="setTimer">⚙️ 设置</button>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 今日故事推荐 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="section-icon">⭐</text>
+        <text>今日推荐</text>
+      </view>
+      <view class="recommendation-card" bindtap="playRecommendation">
+        <view class="recommendation-content">
+          <image src="https://images.unsplash.com/photo-1633613286991-611fe299c4be?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZHJhZ29ufGVufDB8fDB8fHww" mode="aspectFill" class="recommendation-image"></image>
+          <view class="recommendation-info">
+            <text class="recommendation-title">龙的传说</text>
+            <text class="recommendation-desc">一个关于中国传统神兽的精彩故事</text>
+            <view class="recommendation-meta">
+              <text class="recommendation-tag">新故事</text>
+              <text class="recommendation-time">10分钟</text>
+            </view>
+          </view>
+        </view>
+        <button class="listen-button">🎧 立即收听</button>
+      </view>
+    </view>
+    
+    <!-- 摇篮曲 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="section-icon">🎵</text>
+        <text>摇篮曲</text>
+      </view>
+      <view class="lullaby-grid">
+        <view class="lullaby-card" bindtap="playLullaby" data-type="world">
+          <view class="lullaby-icon world">🎵</view>
+          <text class="lullaby-title">世界名曲</text>
+        </view>
+        <view class="lullaby-card" bindtap="playLullaby" data-type="chinese">
+          <view class="lullaby-icon chinese">🎵</view>
+          <text class="lullaby-title">中国童谣</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+  
+  <!-- 播放栏 -->
+  <view class="player-bar" wx:if="{{isPlaying}}" style="position: fixed; left: -12rpx; top: 1156rpx">
+    <view class="player-info">
+      <image src="https://images.unsplash.com/photo-1603486002664-a7319421e133?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fGZhaXJ5JTIwdGFsZXxlbnwwfHwwfHx8MA%3D%3D" mode="aspectFill" class="player-thumb"></image>
+      <view>
+        <text class="player-title">{{currentStory.title || '三只小猪'}}</text>
+        <text class="player-progress">{{playerProgress}}</text>
+      </view>
+    </view>
+    <view class="player-controls">
+      <view class="control-button small" bindtap="prevTrack">⏮</view>
+      <view class="control-button large" bindtap="togglePlay">{{isPlaying && !audioContext.paused ? '⏸' : '▶️'}}</view>
+      <view class="control-button small" bindtap="nextTrack">⏭</view>
+      <view class="control-button small" bindtap="showPlaylist">📋</view>
     </view>
   </view>
-</scroll-view>
+
+  <!-- 倒计时设置模态框 -->
+  <view class="modal" wx:if="{{showTimerSettingModal}}">
+    <view class="modal-mask" bindtap="closeTimerSettingModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">设置睡眠时间</text>
+        <view class="close-btn" bindtap="closeTimerSettingModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="time-options">
+          <view 
+            wx:for="{{timeOptions}}" 
+            wx:key="index" 
+            class="time-option" 
+            bindtap="selectTime" 
+            data-time="{{item}}">
+            <text>{{item}}分钟</text>
+          </view>
+        </view>
+        
+        <view class="custom-time">
+          <text class="custom-time-label">自定义时间（分钟）</text>
+          <input type="number" class="custom-time-input" bindinput="customTimeInput" placeholder="输入分钟数"/>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closeTimerSettingModal">取消</button>
+        <button class="save-btn" bindtap="closeTimerSettingModal">确定</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 播放目录模态框 -->
+  <view class="modal" wx:if="{{showPlaylistModal}}">
+    <view class="modal-mask" bindtap="closePlaylistModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">播放目录</text>
+        <view class="close-btn" bindtap="closePlaylistModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="playlist-container">
+          <view class="playlist-item {{currentStory && currentStory.title === '白雪公主' ? 'active' : ''}}" bindtap="selectPlaylistItem" data-title="白雪公主">
+            <view class="playlist-item-info">
+              <text class="playlist-item-title">白雪公主</text>
+              <text class="playlist-item-duration">8分钟</text>
+            </view>
+            <view class="playlist-item-actions">
+              <text class="playlist-action remove" catchtap="removeFromPlaylist" data-title="白雪公主">✕</text>
+            </view>
+          </view>
+          
+          <view class="playlist-item {{currentStory && currentStory.title === '三只小猪' ? 'active' : ''}}" bindtap="selectPlaylistItem" data-title="三只小猪">
+            <view class="playlist-item-info">
+              <text class="playlist-item-title">三只小猪</text>
+              <text class="playlist-item-duration">6分钟</text>
+            </view>
+            <view class="playlist-item-actions">
+              <text class="playlist-action remove" catchtap="removeFromPlaylist" data-title="三只小猪">✕</text>
+            </view>
+          </view>
+          
+          <view class="playlist-item {{currentStory && currentStory.title === '小红帽' ? 'active' : ''}}" bindtap="selectPlaylistItem" data-title="小红帽">
+            <view class="playlist-item-info">
+              <text class="playlist-item-title">小红帽</text>
+              <text class="playlist-item-duration">7分钟</text>
+            </view>
+            <view class="playlist-item-actions">
+              <text class="playlist-action remove" catchtap="removeFromPlaylist" data-title="小红帽">✕</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closePlaylistModal">关闭</button>
+      </view>
+    </view>
+  </view>
+</view>

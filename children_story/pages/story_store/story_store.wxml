@@ -1,0 +1,410 @@
+<!--story_store.wxml-->
+<view class="container">
+  <!-- 状态栏 -->
+  <view class="status-bar">
+    <text class="page-title">故事库</text>
+  </view>
+  
+  <!-- 内容区域 -->
+  <scroll-view class="content-area" scroll-y>
+    <!-- 搜索栏 -->
+    <view class="search-bar">
+      <view class="search-input-wrapper">
+        <view class="search-icon">🔍</view>
+        <input class="search-input" placeholder="搜索故事" confirm-type="search" bindconfirm="searchStory"/>
+      </view>
+      <view class="filter-button" bindtap="showFilterOptions">
+        <text>筛选</text>
+      </view>
+    </view>
+    
+    <!-- 分类导航 -->
+    <scroll-view class="category-nav" scroll-x>
+      <view class="category-item {{currentCategory === 'all' ? 'active' : ''}}" bindtap="selectCategory" data-category="all">
+        <text>全部</text>
+      </view>
+      <view class="category-item {{currentCategory === 'recommend' ? 'active' : ''}}" bindtap="selectCategory" data-category="recommend">
+        <text>推荐</text>
+      </view>
+      <view class="category-item {{currentCategory === 'classic' ? 'active' : ''}}" bindtap="selectCategory" data-category="classic">
+        <text>经典童话</text>
+      </view>
+      <view class="category-item {{currentCategory === 'animal' ? 'active' : ''}}" bindtap="selectCategory" data-category="animal">
+        <text>动物故事</text>
+      </view>
+      <view class="category-item {{currentCategory === 'sleep' ? 'active' : ''}}" bindtap="selectCategory" data-category="sleep">
+        <text>睡前故事</text>
+      </view>
+      <view class="category-item {{currentCategory === 'education' ? 'active' : ''}}" bindtap="selectCategory" data-category="education">
+        <text>儿童教育</text>
+      </view>
+      <view class="category-item {{currentCategory === 'custom' ? 'active' : ''}}" bindtap="selectCategory" data-category="custom">
+        <text>我的上传</text>
+      </view>
+    </scroll-view>
+    
+    <!-- 故事列表 -->
+    <view class="story-list">
+      <view class="story-item" wx:for="{{storyList}}" wx:key="id" bindtap="playStory" data-id="{{item.id}}">
+        <image class="story-cover" src="{{item.cover}}" mode="aspectFill"></image>
+        <view class="story-info">
+          <view class="story-title-row">
+            <text class="story-title">{{item.title}}</text>
+            <text class="story-tag" wx:if="{{item.isNew}}">新</text>
+            <text class="story-tag custom" wx:if="{{item.isCustom}}">自制</text>
+          </view>
+          <text class="story-desc">{{item.description}}</text>
+          <view class="story-meta">
+            <text class="story-duration">{{item.duration}}</text>
+            <text class="story-category">{{item.category}}</text>
+            <text class="story-plays">{{item.plays}}次播放</text>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 加载更多 -->
+      <view class="load-more" bindtap="loadMoreStories" wx:if="{{hasMoreStories}}">
+        <text>加载更多</text>
+      </view>
+      <view class="load-more-end" wx:else>
+        <text>没有更多故事了~</text>
+      </view>
+    </view>
+  </scroll-view>
+  
+  <!-- 上传按钮 -->
+  <view class="upload-button" bindtap="showUploadOptions">
+    <text class="upload-icon">+</text>
+  </view>
+  
+  <!-- 上传选项弹窗 -->
+  <view class="upload-options-modal {{showUploadOptionsClass}}" wx:if="{{showUploadOptions}}">
+    <view class="upload-options-mask" bindtap="hideUploadOptions"></view>
+    <view class="upload-options-content">
+      <view class="upload-options-header">
+        <text class="upload-options-title">上传故事</text>
+      </view>
+      
+      <view class="upload-option animated-item" bindtap="uploadAIStory">
+        <view class="upload-option-icon ai">🤖</view>
+        <text class="upload-option-text">AI音色+故事内容</text>
+      </view>
+      
+      <view class="upload-option animated-item" bindtap="uploadTextStory">
+        <view class="upload-option-icon text">📝</view>
+        <text class="upload-option-text">故事内容上传</text>
+      </view>
+      
+      <view class="upload-option animated-item" bindtap="uploadAudioStory">
+        <view class="upload-option-icon audio">🎤</view>
+        <text class="upload-option-text">故事音频上传</text>
+      </view>
+      
+      <view class="upload-option-cancel" bindtap="hideUploadOptions">
+        <text>取消</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 上传AI故事模态框 -->
+  <view class="modal" wx:if="{{showAIUploadModal}}">
+    <view class="modal-mask" bindtap="closeAIUploadModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">AI音色+故事内容</text>
+        <view class="close-btn" bindtap="closeAIUploadModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">故事标题</text>
+          <input class="form-input" bindinput="handleStoryTitleInput" placeholder="请输入故事标题"/>
+        </view>
+        
+        <view class="form-item upload-cover">
+          <text class="form-label">上传故事封面</text>
+          <view class="cover-upload-box" bindtap="chooseCoverImage">
+            <image wx:if="{{tempCoverUrl}}" src="{{tempCoverUrl}}" mode="aspectFill" class="preview-image"></image>
+            <view wx:else class="upload-placeholder">
+              <text class="upload-icon">+</text>
+              <text class="upload-text">点击上传封面</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">故事类别</text>
+          <picker bindchange="handleStoryCategoryChange" value="{{categoryIndex}}" range="{{categoryOptions}}">
+            <view class="picker-view">
+              {{newStory.category ? newStory.category : '请选择故事类别'}}
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">简短描述</text>
+          <input class="form-input" bindinput="handleStoryDescInput" placeholder="请输入简短描述"/>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">故事内容</text>
+          <textarea class="form-textarea" bindinput="handleStoryContentInput" placeholder="请输入故事内容..." maxlength="-1"/>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">语言选择</text>
+          <view class="language-options">
+            <view class="language-option {{newStory.language === 'zh' ? 'selected' : ''}}" bindtap="selectLanguage" data-lang="zh">
+              <text>中文</text>
+            </view>
+            <view class="language-option {{newStory.language === 'en' ? 'selected' : ''}}" bindtap="selectLanguage" data-lang="en">
+              <text>英文</text>
+            </view>
+            <view class="language-option {{newStory.language === 'jp' ? 'selected' : ''}}" bindtap="selectLanguage" data-lang="jp">
+              <text>日文</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">音色选择</text>
+          <view class="voice-selection">
+            <view class="voice-option {{newStory.voiceType === 'system' ? 'selected' : ''}}" bindtap="selectVoiceType" data-type="system">
+              <text>系统音色</text>
+              <picker bindchange="handleSystemVoiceChange" value="{{systemVoiceIndex}}" range="{{systemVoices}}" disabled="{{newStory.voiceType !== 'system'}}">
+                <view class="voice-picker {{newStory.voiceType === 'system' ? 'active' : ''}}">
+                  {{newStory.voiceType === 'system' ? (newStory.voice || '请选择系统音色') : '请先选择系统音色'}}
+                </view>
+              </picker>
+            </view>
+            
+            <view class="voice-option {{newStory.voiceType === 'custom' ? 'selected' : ''}}" bindtap="selectVoiceType" data-type="custom">
+              <text>我的音色</text>
+              <picker bindchange="handleCustomVoiceChange" value="{{customVoiceIndex}}" range="{{myVoices}}" range-key="name" disabled="{{newStory.voiceType !== 'custom' || myVoices.length === 0}}">
+                <view class="voice-picker {{newStory.voiceType === 'custom' ? 'active' : ''}}">
+                  {{newStory.voiceType === 'custom' ? (newStory.voice || (myVoices.length > 0 ? '请选择我的音色' : '暂无自定义音色')) : '请先选择我的音色'}}
+                </view>
+              </picker>
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">发布选项</text>
+          <radio-group class="publish-options" bindchange="handlePublishOptionChange">
+            <label class="publish-option">
+              <radio value="private" checked="{{newStory.isPrivate}}"/>仅自己可见
+            </label>
+            <label class="publish-option">
+              <radio value="public" checked="{{!newStory.isPrivate}}"/>公开分享
+            </label>
+          </radio-group>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closeAIUploadModal">取消</button>
+        <button class="save-btn" bindtap="submitAIStory">提交审核</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 上传文本故事模态框 -->
+  <view class="modal" wx:if="{{showTextUploadModal}}">
+    <view class="modal-mask" bindtap="closeTextUploadModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">上传文本故事</text>
+        <view class="close-btn" bindtap="closeTextUploadModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">故事标题</text>
+          <input class="form-input" bindinput="handleStoryTitleInput" placeholder="请输入故事标题"/>
+        </view>
+        
+        <view class="form-item upload-cover">
+          <text class="form-label">上传故事封面</text>
+          <view class="cover-upload-box" bindtap="chooseCoverImage">
+            <image wx:if="{{tempCoverUrl}}" src="{{tempCoverUrl}}" mode="aspectFill" class="preview-image"></image>
+            <view wx:else class="upload-placeholder">
+              <text class="upload-icon">+</text>
+              <text class="upload-text">点击上传封面</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">故事类别</text>
+          <picker bindchange="handleStoryCategoryChange" value="{{categoryIndex}}" range="{{categoryOptions}}">
+            <view class="picker-view">
+              {{newStory.category ? newStory.category : '请选择故事类别'}}
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">简短描述</text>
+          <input class="form-input" bindinput="handleStoryDescInput" placeholder="请输入简短描述"/>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">故事内容</text>
+          <textarea class="form-textarea" bindinput="handleStoryContentInput" placeholder="请输入故事内容..." maxlength="-1"/>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">发布选项</text>
+          <radio-group class="publish-options" bindchange="handlePublishOptionChange">
+            <label class="publish-option">
+              <radio value="private" checked="{{newStory.isPrivate}}"/>仅自己可见
+            </label>
+            <label class="publish-option">
+              <radio value="public" checked="{{!newStory.isPrivate}}"/>公开分享
+            </label>
+          </radio-group>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closeTextUploadModal">取消</button>
+        <button class="save-btn" bindtap="submitTextStory">提交审核</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 上传录音故事模态框 -->
+  <view class="modal" wx:if="{{showAudioUploadModal}}">
+    <view class="modal-mask" bindtap="closeAudioUploadModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">上传录音故事</text>
+        <view class="close-btn" bindtap="closeAudioUploadModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">故事标题</text>
+          <input class="form-input" bindinput="handleStoryTitleInput" placeholder="请输入故事标题"/>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">故事类别</text>
+          <picker bindchange="handleStoryCategoryChange" value="{{categoryIndex}}" range="{{categoryOptions}}">
+            <view class="picker-view">
+              {{newStory.category ? newStory.category : '请选择故事类别'}}
+            </view>
+          </picker>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">简短描述</text>
+          <input class="form-input" bindinput="handleStoryDescInput" placeholder="请输入简短描述"/>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">录音</text>
+          <view class="record-box">
+            <view class="record-icon {{isRecording ? 'recording' : ''}}">
+              <text class="mic-icon">🎤</text>
+            </view>
+            <text class="record-text">{{recordStatusText}}</text>
+            <view class="record-btn {{isRecording ? 'stop' : ''}}" bindtap="toggleRecording">
+              {{isRecording ? '停止录制' : '开始录制'}}
+            </view>
+            <view class="record-duration" wx:if="{{recordingDuration > 0}}">
+              已录制: {{recordingDuration}}秒
+            </view>
+          </view>
+        </view>
+        
+        <view class="form-item">
+          <text class="form-label">发布选项</text>
+          <radio-group class="publish-options" bindchange="handlePublishOptionChange">
+            <label class="publish-option">
+              <radio value="private" checked="{{newStory.isPrivate}}"/>仅自己可见
+            </label>
+            <label class="publish-option">
+              <radio value="public" checked="{{!newStory.isPrivate}}"/>公开分享
+            </label>
+          </radio-group>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="closeAudioUploadModal">取消</button>
+        <button class="save-btn" bindtap="submitAudioStory" disabled="{{!recordingComplete}}">提交审核</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 筛选选项模态框 -->
+  <view class="modal" wx:if="{{showFilterModal}}">
+    <view class="modal-mask" bindtap="closeFilterModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">筛选选项</text>
+        <view class="close-btn" bindtap="closeFilterModal">✕</view>
+      </view>
+      
+      <view class="modal-body">
+        <view class="filter-section">
+          <text class="filter-section-title">年龄段</text>
+          <view class="filter-options">
+            <view class="filter-option {{filter.ageRange === '0-3' ? 'selected' : ''}}" bindtap="selectAgeRange" data-age="0-3">
+              <text>0-3岁</text>
+            </view>
+            <view class="filter-option {{filter.ageRange === '4-6' ? 'selected' : ''}}" bindtap="selectAgeRange" data-age="4-6">
+              <text>4-6岁</text>
+            </view>
+            <view class="filter-option {{filter.ageRange === '7-10' ? 'selected' : ''}}" bindtap="selectAgeRange" data-age="7-10">
+              <text>7-10岁</text>
+            </view>
+            <view class="filter-option {{filter.ageRange === 'all' ? 'selected' : ''}}" bindtap="selectAgeRange" data-age="all">
+              <text>全部</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="filter-section">
+          <text class="filter-section-title">时长</text>
+          <view class="filter-options">
+            <view class="filter-option {{filter.duration === 'short' ? 'selected' : ''}}" bindtap="selectDuration" data-duration="short">
+              <text>5分钟内</text>
+            </view>
+            <view class="filter-option {{filter.duration === 'medium' ? 'selected' : ''}}" bindtap="selectDuration" data-duration="medium">
+              <text>5-10分钟</text>
+            </view>
+            <view class="filter-option {{filter.duration === 'long' ? 'selected' : ''}}" bindtap="selectDuration" data-duration="long">
+              <text>10分钟以上</text>
+            </view>
+            <view class="filter-option {{filter.duration === 'all' ? 'selected' : ''}}" bindtap="selectDuration" data-duration="all">
+              <text>全部</text>
+            </view>
+          </view>
+        </view>
+        
+        <view class="filter-section">
+          <text class="filter-section-title">排序方式</text>
+          <view class="filter-options">
+            <view class="filter-option {{filter.sort === 'popular' ? 'selected' : ''}}" bindtap="selectSort" data-sort="popular">
+              <text>最受欢迎</text>
+            </view>
+            <view class="filter-option {{filter.sort === 'newest' ? 'selected' : ''}}" bindtap="selectSort" data-sort="newest">
+              <text>最新上传</text>
+            </view>
+            <view class="filter-option {{filter.sort === 'duration' ? 'selected' : ''}}" bindtap="selectSort" data-sort="duration">
+              <text>时长</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="resetFilter">重置</button>
+        <button class="save-btn" bindtap="applyFilter">应用筛选</button>
+      </view>
+    </view>
+  </view>
+</view> 
